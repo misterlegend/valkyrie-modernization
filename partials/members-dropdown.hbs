@@ -1,0 +1,88 @@
+<div class="dropdown dropdown-form subscribe subscribe-form">
+    <a href="#" class="nav-link change-theme-color dropdown-toggle {{#if mobile}}navbar-toggler d-lg-none btn-control{{/if}}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="alternate"><i class="fa fa-user"></i></a>
+    <div class="dropdown-menu animated fadeIn" aria-labelledby="dropdownMenuButton">
+        <div class="info-wrapper">
+            {{#if @member}}
+                <p>{{t "User"}}: <strong>{{@member.email}}</strong></p>
+                {{#if @member.paid}}
+                    {{#foreach @member.subscriptions}}
+                        <hr>
+                        <p>{{t "Plan Type"}}: <strong>{{plan.nickname}}</strong></p>
+                        <p>{{t "Status"}}: <strong>{{status}}</strong></p>
+                        <p>{{t "Expires in"}}: <strong>{{date current_period_end timeago="true"}}</strong></p>
+                        <p>{{t "Price"}}: <strong>{{price plan.amount}}</strong></p>
+                        {{cancel_link class="btn btn-control btn-no-background"}}
+                        <a class="btn btn-control btn-no-background" href="javascript:" data-members-edit-billing>{{t "Edit billing info"}}</a>
+                    {{/foreach}}
+                {{else}}
+                    {{#get "tiers" include="monthly_price,yearly_price,benefits" limit="all" as |tiers|}}
+                        <hr>
+                        <div class="checkout-box">
+                            <p>{{t "Plan Tiers"}}</p>
+                            {{> "pricing-selector" }}
+                            {{#foreach tiers}}
+                                <header class="checkout-plan-header">
+                                    <div class="plan-price">
+                                        <h6>{{name}}</h6>
+                                        {{#if monthly_price}}
+                                            <span class="checkout-plan-monthly-price">
+                                                <strong>{{price monthly_price currency=currency}}</strong> / {{t "month"}}
+                                            </span>
+                                        {{/if}}
+                                        {{#if yearly_price}}
+                                            <span class="checkout-plan-yearly-price">
+                                                <strong>{{price yearly_price currency=currency}}</strong> / {{t "year"}}
+                                            </span>
+                                        {{/if}}
+                                    </div>
+                                    {{#if benefits}}
+                                        <div class="plan-content">
+                                            <p>
+                                                {{#foreach benefits as |benefit|}}
+                                                    <span>{{benefit}}</span>
+                                                {{/foreach}}
+                                            </p>
+                                        </div>
+                                    {{/if}}
+                                    {{#if monthly_price}}
+                                        <a
+                                            class="btn btn-control btn-no-background checkout-plan-monthly-price"
+                                            href="javascript:"
+                                            data-portal="signup/{{id}}/monthly"
+                                        >
+                                            {{t "Subscribe"}}
+                                        </a>
+                                    {{/if}}
+                                    {{#if yearly_price}}
+                                        <a
+                                            class="btn btn-control btn-no-background checkout-plan-yearly-price"
+                                            href="javascript:"
+                                            data-portal="signup/{{id}}/yearly"
+                                        >
+                                            {{t "Subscribe"}}
+                                        </a>
+                                    {{/if}}
+                                </header>
+                            {{/foreach}}
+                        </div>
+                    {{/get}}
+                {{/if}}
+                <hr />
+                <button class="btn btn-no-background btn-full" role="link" data-members-signout>{{t "Sign out"}}</button>
+            {{else}}
+                <form data-members-form="signin">
+                    <span>{{t "Login / Subscribe"}}</span>
+                    <div class="form-wrapper">
+                        <input class="subscribe-email input_class" data-members-email="" placeholder="youremail@example.com" autocomplete="false">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <span class="success-text">{{t "Check your inbox and click the link to confirm your subscription."}}</span>
+                    <span class="error-text">{{t "Please enter a valid email address."}}</span>
+                    <div class="button-wrapper">
+                        <button type="submit" class="button primary btn btn-no-background">{{t "Submit"}}</button>
+                    </div>
+                </form>
+            {{/if}}
+        </div>
+    </div>
+</div>
